@@ -15,6 +15,18 @@ async function findHotels() {
   return data;
 }
 
+async function findHotelsWithAvailability() {
+  return prisma.hotel.findMany({
+    include: {
+      Rooms: {
+        include: {
+          Booking: true,
+        },
+      },
+    },
+  });
+}
+
 async function findRoomsByHotelId(hotelId: number) {
   const cache = await redis.get(`hotels:${hotelId}`);
 
@@ -38,4 +50,5 @@ async function findRoomsByHotelId(hotelId: number) {
 export const hotelRepository = {
   findHotels,
   findRoomsByHotelId,
+  findHotelsWithAvailability,
 };
