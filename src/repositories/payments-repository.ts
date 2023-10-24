@@ -1,5 +1,6 @@
 import { prisma } from '@/config';
 import { PaymentParams } from '@/protocols';
+import { ticketsRepository } from './tickets-repository';
 
 async function findPaymentByTicketId(ticketId: number) {
   const result = await prisma.payment.findFirst({
@@ -8,18 +9,23 @@ async function findPaymentByTicketId(ticketId: number) {
   return result;
 }
 
-async function createPayment(ticketId: number, params: PaymentParams) {
-  const result = await prisma.payment.create({
+async function processPayment(ticketId: number, params: PaymentParams) {
+  await prisma.$transaction([
+    createPayment(ticketId, params),
+    ticketsRepository.ticketProcessPayment(ticketId)
+  ])
+}
+
+function createPayment(ticketId: number, params: PaymentParams) {
+  return prisma.payment.create({
     data: {
       ticketId,
       ...params,
     },
   });
-
-  return result;
 }
 
 export const paymentsRepository = {
   findPaymentByTicketId,
-  createPayment,
+  processPayment,
 };
