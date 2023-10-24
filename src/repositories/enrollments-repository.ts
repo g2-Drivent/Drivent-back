@@ -1,4 +1,4 @@
-import { Enrollment, PrismaClient } from '@prisma/client';
+import { Enrollment } from '@prisma/client';
 import { prisma } from '@/config';
 import { CreateAddressParams, UpdateAddressParams, addressRepository } from './address-repository';
 import { enrollmentNotFoundError } from '@/errors';
