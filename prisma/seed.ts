@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, TicketType } from "@prisma/client";
 import dayjs from "dayjs";
 const prisma = new PrismaClient();
 
@@ -15,7 +15,46 @@ async function main() {
       },
     });
   }
-
+  const ticketTypes: TicketType[] = await prisma.ticketType.findMany({});
+  let tickets = {remote:false, presentialwithHotel:false, presentialwithoutHotel:false};
+  for(let i = 0; i<ticketTypes.length;i++){
+    if(ticketTypes[i].isRemote === true){
+      tickets.remote = true;
+    } else {
+      if(ticketTypes[i].includesHotel === true){
+        tickets.presentialwithHotel = true;
+      } else{
+        tickets.presentialwithoutHotel = true;
+      }
+    }
+  }
+  if(!tickets.remote){
+    await prisma.ticketType.create({
+      data:{
+        name: 'remote',
+        price: 300,
+        isRemote: true,
+        includesHotel: false
+      },});
+  }
+  if(!tickets.presentialwithHotel){
+    await prisma.ticketType.create({
+      data:{
+        name: 'Presential + Hotel',
+        price: 500,
+        isRemote: false,
+        includesHotel: true
+      },});
+  }
+  if(!tickets.presentialwithoutHotel){
+    await prisma.ticketType.create({
+      data:{
+        name: 'Presential without Hotel',
+        price: 300,
+        isRemote: false,
+        includesHotel: false
+      },});
+  }
   console.log({ event });
 }
 
