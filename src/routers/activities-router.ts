@@ -5,10 +5,10 @@ import { Router } from "express";
 const activitiesRouter = Router();
 
 activitiesRouter
-    .all('/*', authenticateToken)
+    //.all('/*', authenticateToken)
     .get('/', activitiesController.getAvailableDays)
     .get('/register', activitiesController.getAvailableTimes)
-    .post('/register', activitiesController.postActivity);
+    .post('/register/:activityId', activitiesController.postActivity);
 
 export {activitiesRouter};
 

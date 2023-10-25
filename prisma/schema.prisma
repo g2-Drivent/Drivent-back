@@ -155,5 +155,5 @@ model Register {
   User       User     @relation(fields: [userId], references: [id])
   userId     Int      
   Activity   Activity @relation(fields: [activityId], references: [id])
-  activityId Int      @unique
+  activityId Int      
 }
