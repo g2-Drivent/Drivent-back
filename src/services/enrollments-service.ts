@@ -55,9 +55,8 @@ async function createOrUpdateEnrollmentWithAddress(params: CreateOrUpdateEnrollm
 
   await getAddressFromCEP(address.cep);
 
-  const newEnrollment = await enrollmentRepository.upsert(params.userId, enrollment, exclude(enrollment, 'userId'));
+  await enrollmentRepository.upsertEnrollmentAndAddress(params.userId, enrollment, exclude(enrollment, 'userId'), address, address);
 
-  await addressRepository.upsert(newEnrollment.id, address, address);
 }
 
 function getAddressForUpsert(address: CreateAddressParams) {

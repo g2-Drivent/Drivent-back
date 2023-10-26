@@ -4,12 +4,21 @@ import { Response } from "express";
 import httpStatus from "http-status";
 
  
- async function getAvailableDays() {
+ export async function getAvailableDays(req: AuthenticatedRequest, res: Response) {
+    const { userId } = req;
     
+    const days = await activitiesService.getAvailableDays(userId);
+
+    return res.status(httpStatus.OK).send(days);
  }
  
- async function getAvailableTimes() {
-     
+ export async function getAvailableTimes(req: AuthenticatedRequest, res: Response) {
+     const date = req.params.date;
+     const { userId } = req;
+
+     const times = await activitiesService.getAvailableTimes(date, userId);
+
+     return res.status(httpStatus.OK).send(times);
  }
  
  async function postActivity(req: AuthenticatedRequest, res: Response) {
@@ -20,7 +29,5 @@ import httpStatus from "http-status";
  }
  
  export const activitiesController = {
-     getAvailableDays,
-     getAvailableTimes,
      postActivity
  }
