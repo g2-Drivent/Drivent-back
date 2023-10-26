@@ -7,7 +7,7 @@ const activitiesRouter = Router();
 activitiesRouter
     .all('/*', authenticateToken)
     .get('/', activitiesController.getAvailableDays)
-    .get('/register', activitiesController.getAvailableTimes)
+    .get('/:date', activitiesController.getAvailableTimes)
     .post('/register/:activityId', activitiesController.postActivity);
 
 
