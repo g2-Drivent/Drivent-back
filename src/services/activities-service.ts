@@ -3,7 +3,6 @@ import { activitiesRepository, bookingRepository, enrollmentRepository, ticketsR
 import dayjs from "dayjs";
 import httpStatus from "http-status";
 import { TicketStatus } from "@prisma/client";
-import dayjs from "dayjs";
 
 
  
