@@ -15,7 +15,7 @@ import httpStatus from "http-status";
  async function postActivity(req: AuthenticatedRequest, res: Response) {
     const { userId } = req;
     const { activityId} = req.params;
-    const activity = await activitiesService.postActivity(2, activityId);
+    const activity = await activitiesService.postActivity(userId, activityId);
     res.sendStatus(httpStatus.CREATED);
  }
  
