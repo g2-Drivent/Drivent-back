@@ -9,3 +9,4 @@ export * from './hotels-repository';
 export * from './booking-repository';
 export * from './room-repository';
 export * from './activities-repository';
+export * from './register-repository';

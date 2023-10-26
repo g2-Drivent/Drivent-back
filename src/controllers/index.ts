@@ -7,3 +7,4 @@ export * from './payments-controller';
 export * from './hotels-controller';
 export * from './booking-controller';
 export * from './activities-controller';
+export * from './register-controller';

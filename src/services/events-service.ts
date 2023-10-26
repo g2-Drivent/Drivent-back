@@ -24,7 +24,17 @@ async function isCurrentEventActive(): Promise<boolean> {
   return now.isAfter(eventStartsAt) && now.isBefore(eventEndsAt);
 }
 
+async function getEventImage(imageUrl: string) {
+
+  const image = await eventRepository.fetchImage(imageUrl);
+  if (!image) throw notFoundError();
+
+  return image;
+}
+
+
 export const eventsService = {
   getFirstEvent,
+  getEventImage,
   isCurrentEventActive,
 };
