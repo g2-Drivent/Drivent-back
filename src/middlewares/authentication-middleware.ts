@@ -4,6 +4,7 @@ import { unauthorizedError } from '@/errors';
 import { authenticationRepository } from '@/repositories';
 
 export async function authenticateToken(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+
   const authHeader = req.header('Authorization');
   if (!authHeader) throw unauthorizedError();
 
@@ -13,6 +14,7 @@ export async function authenticateToken(req: AuthenticatedRequest, res: Response
   const { userId } = jwt.verify(token, process.env.JWT_SECRET) as JWTPayload;
 
   const session = await authenticationRepository.findSession(token);
+
   if (!session) throw unauthorizedError();
 
   req.userId = userId;

@@ -4,6 +4,8 @@ import jwt from 'jsonwebtoken';
 import { invalidCredentialsError } from '@/errors';
 import { authenticationRepository, userRepository } from '@/repositories';
 import { exclude } from '@/utils/prisma-utils';
+import { githubUserResume } from '@/utils/request';
+import { userService } from '.';
 
 async function signIn(params: SignInParams): Promise<SignInResult> {
   const { email, password } = params;
@@ -42,7 +44,27 @@ async function validatePasswordOrFail(password: string, userPassword: string) {
   if (!isPasswordValid) throw invalidCredentialsError();
 }
 
+async function loginWithGitHub(code: string){
+  const token = await authenticationRepository.exchangeCodeForAcessToken(code);
+  if (!token) throw invalidCredentialsError();
+
+  const userInformation: githubUserResume  = await authenticationRepository.fetchUserFromGitHub(token);
+  const email = userInformation.email? `${userInformation.id}${userInformation.email}` : `${userInformation.id}@mail.com`;
+  const password = `${userInformation.id}${userInformation.node_id}`
+
+
+  const userTest = await userRepository.findByEmail(email, { id: true, email: true, password: true });
+  if(!userTest){
+    await userService.createUser({email, password});
+  }
+
+  const response = await signIn({email, password});
+  return response;
+}
+
+
 export type SignInParams = Pick<User, 'email' | 'password'>;
+export type SignInByGitHubParams = {code: String;};
 
 type SignInResult = {
   user: Pick<User, 'id' | 'email'>;
@@ -53,4 +75,5 @@ type GetUserOrFailResult = Pick<User, 'id' | 'email' | 'password'>;
 
 export const authenticationService = {
   signIn,
+  loginWithGitHub
 };
