@@ -6,9 +6,10 @@ const activitiesRouter = Router();
 
 activitiesRouter
     .all('/*', authenticateToken)
-    .get('/', getAvailableDays)
-    .get('/:date', getAvailableTimes)
-    .post('/register', activitiesController.postActivity);
+    .get('/', activitiesController.getAvailableDays)
+    .get('/register', activitiesController.getAvailableTimes)
+    .post('/register/:activityId', activitiesController.postActivity);
+
 
 export {activitiesRouter};
 

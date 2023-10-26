@@ -21,8 +21,11 @@ import httpStatus from "http-status";
      return res.status(httpStatus.OK).send(times);
  }
  
- async function postActivity() {
-     
+ async function postActivity(req: AuthenticatedRequest, res: Response) {
+    const { userId } = req;
+    const { activityId} = req.params;
+    const activity = await activitiesService.postActivity(userId, activityId);
+    res.sendStatus(httpStatus.CREATED);
  }
  
  export const activitiesController = {
