@@ -24,8 +24,8 @@ import { TicketStatus } from "@prisma/client";
    }
 
     const activityTimes = await activitiesRepository.getAvailableDays();
+    activityTimes.sort((a,b) => dayjs(a.date).diff(b.date))
     const activityDates = [...new Set(activityTimes.map(t => dayjs(t.date).startOf('day').toISOString()))];
-
     return activityDates;
  }
  
@@ -47,6 +47,7 @@ import { TicketStatus } from "@prisma/client";
    }
 
     const times = await activitiesRepository.getAvailableTimes(date);
+    times.sort((a,b) => dayjs(a.date).diff(b.date));
     const activities = times.map(t => {
       let status = "open";
       if (t.Register.length === t.capacity)
@@ -101,13 +102,11 @@ import { TicketStatus } from "@prisma/client";
     })
     att.map(c => {
         const {date, endTime} = c.Activity;
-        const overlap = (date <= endTimeActivity) && (endTime >= startActivity);
+        const overlap = (date < endTimeActivity) && (endTime > startActivity) && dayjs(date).startOf('day').diff(dayjs(startActivity).startOf('day')) === 0;
         if (overlap) throw conflictError('Overlapping schedules');
     })
 
     const registered = await activitiesRepository.countRegisterd(id);
-    console.log(typeof registered)
-    console.log(typeof time.capacity)
 
     if(time.capacity <= registered) throw ForbiddenError();
 
