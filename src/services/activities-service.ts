@@ -102,13 +102,11 @@ import { TicketStatus } from "@prisma/client";
     })
     att.map(c => {
         const {date, endTime} = c.Activity;
-        const overlap = (date <= endTimeActivity) && (endTime >= startActivity);
+        const overlap = (date < endTimeActivity) && (endTime > startActivity) && dayjs(date).startOf('day').diff(dayjs(startActivity).startOf('day')) === 0;
         if (overlap) throw conflictError('Overlapping schedules');
     })
 
     const registered = await activitiesRepository.countRegisterd(id);
-    console.log(typeof registered)
-    console.log(typeof time.capacity)
 
     if(time.capacity <= registered) throw ForbiddenError();
 
