@@ -24,8 +24,8 @@ import { TicketStatus } from "@prisma/client";
    }
 
     const activityTimes = await activitiesRepository.getAvailableDays();
+    activityTimes.sort((a,b) => dayjs(a.date).diff(b.date))
     const activityDates = [...new Set(activityTimes.map(t => dayjs(t.date).startOf('day').toISOString()))];
-
     return activityDates;
  }
  
@@ -47,6 +47,7 @@ import { TicketStatus } from "@prisma/client";
    }
 
     const times = await activitiesRepository.getAvailableTimes(date);
+    times.sort((a,b) => dayjs(a.date).diff(b.date));
     const activities = times.map(t => {
       let status = "open";
       if (t.Register.length === t.capacity)
